@@ -1,0 +1,877 @@
+Document
+Author: Owen Jin
+
+The script to run my codes is run.py. It runs Decision Tree with pruning option and Information Gain Ratio option, Naive Bayesian Classifier, Gaussian Naive Bayesian Classifier, and Neural Network with Momentum option and alternate weight initialization options. The data set used are Iris, House-Vote, and Monks of UCI database.
+
+There should be no bugs runnning this script. It works under Mac OS. My python version is Python 2.7.6.
++-----------------------------------------------------------------
+|Decision Tree,
+|20 runs on five data set.
+|Options: Prune/No prune, IG/IGR, IGR is difined as IG/SplitInfo.
++----------------------------------------------------------------
+
+My implementation of Decision tree is in the file tree.py.
+class DT:
+1. def train(self, training_data, numClass, useGain): .
+Train a tree with fixed threshold of each feature. When useGain is 1, use information gain, otherwise use information gain ratio.
+
+2. def predict(self, data):
+Predict one sample using trained model.
+
+3. def test(self, test_data, numClass, showAnalysis):
+Test. If showAnalysis is 1, print accuracy, recall and precision. Otherwise not print them.
+
+4. def continuousTrain(self, training_data, numClass, numDivision, useGain):
+Train a tree with continuous data. numDivision indicates the number of split of the feature value range,
+for instance, if feature 1 has minimum value 3 and maximum value 6, set numDivision as 5 will test the threshold of 3.5, 4, 4.5, 5, 5.5. This method calls train method above multiple times. So training a model processing continuous data may take a while. 
+
+5. def dicreteTrain(self, training_data, numClass, useGain):
+Train a tree with discrete data with multiple value of each feaure. This may also takes a while since mulitple combination of thresholds are tested.
+
+6. def prune(self, training_data, numClass):
+Using Chi-square pruning. Find the irrelevant features
+
+Notice that continuousTrain involves multiple trainings and comparison so it could take a relatively long time.
+
+The printed result of the first running is:
+1. DT, Congress, IG--------------------------------
+Precision
+[[ 0.95918367  0.92682927]]
+[[ 47.  76.]]
+[[ 49.  82.]]
+Accurary
+[[ 0.9389313]]
+[[ 123.]]
+[[ 131.]]
+Recall
+[[ 0.88679245  0.97435897]]
+[[ 47.  76.]]
+[[ 53.  78.]]
+Origin length of rule list is: 44 . After pruning, length of rule list is: 44
+-------
+
+DT, Congress, IG-------------------------------- means using Descision Tree, on Congress data set, using Information gain.
+In Precision part, [[ 0.95918367  0.92682927]] is the precision of each class. [[ 47.  76.]] is the number of samples in each class in the prediction. [[ 49.  82.]] is the number of samples in each class in the label set. Accuracy and Recall follows the same logic.
+
++-----------------------------------
+|Decision Tree on Congress data set:
++-----------------------------------
+1. DT, Congress, IG--------------------------------
+Precision
+[[ 0.95918367  0.92682927]]
+[[ 47.  76.]]
+[[ 49.  82.]]
+Accurary
+[[ 0.9389313]]
+[[ 123.]]
+[[ 131.]]
+Recall
+[[ 0.88679245  0.97435897]]
+[[ 47.  76.]]
+[[ 53.  78.]]
+Origin length of rule list is: 44 . After pruning, length of rule list is: 44
+2. -----------prune----------
+Precision
+[[ 0.95918367  0.92682927]]
+[[ 47.  76.]]
+[[ 49.  82.]]
+Accurary
+[[ 0.9389313]]
+[[ 123.]]
+[[ 131.]]
+Recall
+[[ 0.88679245  0.97435897]]
+[[ 47.  76.]]
+[[ 53.  78.]]
+--------------------------------
+3. DT, Congress, IGR--------------------------------
+Precision
+[[ 0.92727273  0.97368421]]
+[[ 51.  74.]]
+[[ 55.  76.]]
+Accurary
+[[ 0.95419847]]
+[[ 125.]]
+[[ 131.]]
+Recall
+[[ 0.96226415  0.94871795]]
+[[ 51.  74.]]
+[[ 53.  78.]]
+Origin length of rule list is: 49 . After pruning, length of rule list is: 45
+4. -----------prune----------
+Precision
+[[ 0.92857143  0.98666667]]
+[[ 52.  74.]]
+[[ 56.  75.]]
+Accurary
+[[ 0.96183206]]
+[[ 126.]]
+[[ 131.]]
+Recall
+[[ 0.98113208  0.94871795]]
+[[ 52.  74.]]
+[[ 53.  78.]]
+--------------------------------
+ It can be seen that on congress data set, if prunining step find the irrelevant feature, it would slightly improve accuracy, recall and precision. If in the pruning step, a irrelevant feature is not found, they remain the same.
+ Using information gain ratio has better performance in terms of accuracy, recall and precision than using information gain.
+
++-----------------------------------
+|Decision Tree on Iris data set:
++-----------------------------------
+5. DT, Iris, IG--------------------------------
+Precision
+[[ 1.          0.91666667  0.9       ]]
+[[ 13.  11.  18.]]
+[[ 13.  12.  20.]]
+Accurary
+[[ 0.93333333]]
+[[ 42.]]
+[[ 45.]]
+Recall
+[[ 1.          0.84615385  0.94736842]]
+[[ 13.  11.  18.]]
+[[ 13.  13.  19.]]
+Origin length of rule list is: 4 . After pruning, length of rule list is: 4
+6. -----------prune----------
+Precision
+[[ 1.          0.91666667  0.9       ]]
+[[ 13.  11.  18.]]
+[[ 13.  12.  20.]]
+Accurary
+[[ 0.93333333]]
+[[ 42.]]
+[[ 45.]]
+Recall
+[[ 1.          0.84615385  0.94736842]]
+[[ 13.  11.  18.]]
+[[ 13.  13.  19.]]
+--------------------------------
+7. DT, Iris, IGR--------------------------------
+Precision
+[[ 1.          0.91666667  0.9       ]]
+[[ 13.  11.  18.]]
+[[ 13.  12.  20.]]
+Accurary
+[[ 0.93333333]]
+[[ 42.]]
+[[ 45.]]
+Recall
+[[ 1.          0.84615385  0.94736842]]
+[[ 13.  11.  18.]]
+[[ 13.  13.  19.]]
+Origin length of rule list is: 4 . After pruning, length of rule list is: 4
+8. -----------prune----------
+Precision
+[[ 1.          0.91666667  0.9       ]]
+[[ 13.  11.  18.]]
+[[ 13.  12.  20.]]
+Accurary
+[[ 0.93333333]]
+[[ 42.]]
+[[ 45.]]
+Recall
+[[ 1.          0.84615385  0.94736842]]
+[[ 13.  11.  18.]]
+[[ 13.  13.  19.]]
+--------------------------------
+
+ It can be seen that on iris data set, pruning does not find irrelavent feature. So the accuracy, recall and presicion does not change.
+ Using information gain ratio has the same performance in terms of accuracy, recall and precision as using information gain.
+ I think the testing result is reasonable since there are 4 features in all and they have continous values.
+
++-----------------------------------
+|Decision Tree on Monks data set:
++-----------------------------------
+9. DT, Monks1, IG--------------------------------
+Precision
+[[ 1.    0.75]]
+[[ 144.  216.]]
+[[ 144.  288.]]
+Accurary
+[[ 0.83333333]]
+[[ 360.]]
+[[ 432.]]
+Recall
+[[ 0.66666667  1.        ]]
+[[ 144.  216.]]
+[[ 216.  216.]]
+Origin length of rule list is: 5 . After pruning, length of rule list is: 3
+10. -----------prune----------
+Precision
+[[ 0.66666667  1.        ]]
+[[ 216.  108.]]
+[[ 324.  108.]]
+Accurary
+[[ 0.75]]
+[[ 324.]]
+[[ 432.]]
+Recall
+[[ 1.   0.5]]
+[[ 216.  108.]]
+[[ 216.  216.]]
+--------------------------------
+11. DT, Monks2, IG--------------------------------
+Precision
+[[ 0.86831276  0.58201058]]
+[[ 211.  110.]]
+[[ 243.  189.]]
+Accurary
+[[ 0.74305556]]
+[[ 321.]]
+[[ 432.]]
+Recall
+[[ 0.72758621  0.77464789]]
+[[ 211.  110.]]
+[[ 290.  142.]]
+Origin length of rule list is: 26 . After pruning, length of rule list is: 15
+12. -----------prune----------
+Precision
+[[ 0.6712963        nan]]
+[[ 290.    0.]]
+[[ 432.    0.]]
+Accurary
+[[ 0.6712963]]
+[[ 290.]]
+[[ 432.]]
+Recall
+[[ 1.  0.]]
+[[ 290.    0.]]
+[[ 290.  142.]]
+--------------------------------
+13. DT, Monks3, IG--------------------------------
+Precision
+[[ 0.95833333  0.91666667]]
+[[ 184.  220.]]
+[[ 192.  240.]]
+Accurary
+[[ 0.93518519]]
+[[ 404.]]
+[[ 432.]]
+Recall
+[[ 0.90196078  0.96491228]]
+[[ 184.  220.]]
+[[ 204.  228.]]
+Origin length of rule list is: 23 . After pruning, length of rule list is: 23
+14. -----------prune----------
+Precision
+[[ 0.95833333  0.91666667]]
+[[ 184.  220.]]
+[[ 192.  240.]]
+Accurary
+[[ 0.93518519]]
+[[ 404.]]
+[[ 432.]]
+Recall
+[[ 0.90196078  0.96491228]]
+[[ 184.  220.]]
+[[ 204.  228.]]
+--------------------------------
+15. DT, Monks1, IGR--------------------------------
+Precision
+[[ 1.    0.75]]
+[[ 144.  216.]]
+[[ 144.  288.]]
+Accurary
+[[ 0.83333333]]
+[[ 360.]]
+[[ 432.]]
+Recall
+[[ 0.66666667  1.        ]]
+[[ 144.  216.]]
+[[ 216.  216.]]
+(432, 7)
+Origin length of rule list is: 5 . After pruning, length of rule list is: 3
+16. -----------prune----------
+Precision
+[[ 0.66666667  1.        ]]
+[[ 216.  108.]]
+[[ 324.  108.]]
+Accurary
+[[ 0.75]]
+[[ 324.]]
+[[ 432.]]
+Recall
+[[ 1.   0.5]]
+[[ 216.  108.]]
+[[ 216.  216.]]
+--------------------------------
+17. DT, Monks2, IGR--------------------------------
+ Precision
+[[ 0.86831276  0.58201058]]
+[[ 211.  110.]]
+[[ 243.  189.]]
+Accurary
+[[ 0.74305556]]
+[[ 321.]]
+[[ 432.]]
+Recall
+[[ 0.72758621  0.77464789]]
+[[ 211.  110.]]
+[[ 290.  142.]]
+Origin length of rule list is: 26 . After pruning, length of rule list is: 15
+18. -----------prune----------
+Precision
+[[ 0.6712963        nan]]
+[[ 290.    0.]]
+[[ 432.    0.]]
+Accurary
+[[ 0.6712963]]
+[[ 290.]]
+[[ 432.]]
+Recall
+[[ 1.  0.]]
+[[ 290.    0.]]
+[[ 290.  142.]]
+--------------------------------
+19. DT, Monks3, IGR--------------------------------
+Precision
+[[ 0.95833333  0.91666667]]
+[[ 184.  220.]]
+[[ 192.  240.]]
+Accurary
+[[ 0.93518519]]
+[[ 404.]]
+[[ 432.]]
+Recall
+[[ 0.90196078  0.96491228]]
+[[ 184.  220.]]
+[[ 204.  228.]]
+Origin length of rule list is: 23 . After pruning, length of rule list is: 23
+20. -----------prune----------
+Precision
+[[ 0.95833333  0.91666667]]
+[[ 184.  220.]]
+[[ 192.  240.]]
+Accurary
+[[ 0.93518519]]
+[[ 404.]]
+[[ 432.]]
+Recall
+[[ 0.90196078  0.96491228]]
+[[ 184.  220.]]
+[[ 204.  228.]]
+
+On monks1 data set, using IG and IGR give the same result in terms of accuracy, presicion and recall.
+But pruning make the accuracy worse, makes precision better in one class and worse in the other class, makes recall better in one class and worse in the other class.
+
+On monks2 data set, using IG and IGR give the same result in terms of accuracy, presicion and recall.
+But pruning make the accuracy worse, makes precision worse, makes recall better in one class and worse in the other class.
+
+On monks3 data set, using IG/IGR, prune/No prune do not make a difference. It has the same performance in terms of precision, recall, and accuracy.
+
++-----------------------------------------------------------------
+|Naive Bayesian,
+|9 runs on five data set.
+|Options: using NB or GNB
++----------------------------------------------------------------
+
+My implementation of Naive Bayesian is in the file nb.py.
+It has two class,
+class NB is for discrete data, class GNB(Gaussian Naive Bayesian) is for continuous data.
++-----------------------------------
+|NB/GNB on Congress data set:
++-----------------------------------
+41. NB, Congress--------------------------------
+Training is finished.
+Precision
+[[ 0.88461538  0.91139241]]
+[[ 46.  72.]]
+[[ 52.  79.]]
+Accurary
+[[ 0.90076336]]
+[[ 118.]]
+[[ 131.]]
+Recall
+[[ 0.86792453  0.92307692]]
+[[ 46.  72.]]
+[[ 53.  78.]]
+--------------------------------
+42. GNB, Congress--------------------------------
+Training is finished.
+Precision
+[[ 0.96078431  0.95      ]]
+[[ 49.  76.]]
+[[ 51.  80.]]
+Accurary
+[[ 0.95419847]]
+[[ 125.]]
+[[ 131.]]
+Recall
+[[ 0.9245283   0.97435897]]
+[[ 49.  76.]]
+[[ 53.  78.]]
+--------------------------------
+
+Gaussian Naive Bayesian has better performance than GB on Congress data set in terms of precision, accuracy and recall, even though it has discrete data.
+
++-----------------------------------
+|NB/GNB on Iris data set:
++-----------------------------------
+43. GNB, Iris--------------------------------
+Training is finished.
+Precision
+[[ 1.          0.92307692  0.94736842]]
+[[ 13.  12.  18.]]
+[[ 13.  13.  19.]]
+Accurary
+[[ 0.95555556]]
+[[ 43.]]
+[[ 45.]]
+Recall
+[[ 1.          0.92307692  0.94736842]]
+[[ 13.  12.  18.]]
+[[ 13.  13.  19.]]
+--------------------------------
+
+The result is not bad.
+
++-----------------------------------
+|NB/GNB on Monks data set:
++-----------------------------------
+44. NB, Monks1--------------------------------
+Training is finished.
+Precision
+[[ 0.69327731  0.7371134 ]]
+[[ 165.  143.]]
+[[ 238.  194.]]
+Accurary
+[[ 0.71296296]]
+[[ 308.]]
+[[ 432.]]
+Recall
+[[ 0.76388889  0.66203704]]
+[[ 165.  143.]]
+[[ 216.  216.]]
+--------------------------------
+45. GNB, Monks1--------------------------------
+Training is finished.
+Precision
+[[ 0.68446602  0.66814159]]
+[[ 141.  151.]]
+[[ 206.  226.]]
+Accurary
+[[ 0.67592593]]
+[[ 292.]]
+[[ 432.]]
+Recall
+[[ 0.65277778  0.69907407]]
+[[ 141.  151.]]
+[[ 216.  216.]]
+--------------------------------
+46. NB, Monks2--------------------------------
+Training is finished.
+Precision
+[[ 0.67032967  0.32352941]]
+[[ 244.   22.]]
+[[ 364.   68.]]
+Accurary
+[[ 0.61574074]]
+[[ 266.]]
+[[ 432.]]
+Recall
+[[ 0.84137931  0.15492958]]
+[[ 244.   22.]]
+[[ 290.  142.]]
+--------------------------------
+47. GNB, Monks2--------------------------------
+Training is finished.
+Precision
+[[ 0.67525773  0.36363636]]
+[[ 262.   16.]]
+[[ 388.   44.]]
+Accurary
+[[ 0.64351852]]
+[[ 278.]]
+[[ 432.]]
+Recall
+[[ 0.90344828  0.11267606]]
+[[ 262.   16.]]
+[[ 290.  142.]]
+--------------------------------
+48. NB, Monks3--------------------------------
+Training is finished.
+Precision
+[[ 0.94444444  1.        ]]
+[[ 204.  216.]]
+[[ 216.  216.]]
+Accurary
+[[ 0.97222222]]
+[[ 420.]]
+[[ 432.]]
+Recall
+[[ 1.          0.94736842]]
+[[ 204.  216.]]
+[[ 204.  228.]]
+--------------------------------
+49. GNB, Monks3--------------------------------
+Training is finished.
+Precision
+[[ 0.82258065  1.        ]]
+[[ 204.  184.]]
+[[ 248.  184.]]
+Accurary
+[[ 0.89814815]]
+[[ 388.]]
+[[ 432.]]
+Recall
+[[ 1.          0.80701754]]
+[[ 204.  184.]]
+[[ 204.  228.]]
+--------------------------------
+
+For Monks1, NB is better in terms of precision and accuracy. Overally speaking NB also has better performance in terms of recall. So its conditional distribution is not very close to normal distribution.
+For Monks2, GNB is better in terms of precision and accuracy. In terms of recall. GNB is better in one class and worse in another class.
+For Monks3, NB is better than GNB in terms of accuracy, precision and recall.
+
++-----------------------------------------------------------------
+|Neural Networks,
+|20 runs on five data set.
+|Options: alternate initialization/ None, Momentum/None
++----------------------------------------------------------------
+
+My implementation of Neural Network is in the file nn.py.
+It has one class NN.
+def turnOffMomentum(self): not using momentum. If not calling this, default is using momentum.
+def initializeWeight(self, training_data): using alternate initialization. If not calling this, default is not using this scheme.
+The result is as below:
++-----------------------------------
+|NN on Iris:
++-----------------------------------
+21. NN, Iris, alternate weight, momentum--------------------------------
+Precision
+[[ 1.    1.    0.95]]
+[[ 13.  12.  19.]]
+[[ 13.  12.  20.]]
+Accurary
+[[ 0.97777778]]
+[[ 44.]]
+[[ 45.]]
+Recall
+[[ 1.          0.92307692  1.        ]]
+[[ 13.  12.  19.]]
+[[ 13.  13.  19.]]
+--------------------------------
+22. NN, Iris, not alternate weight, momentum--------------------------------
+Precision
+[[ 1.          0.68421053  1.        ]]
+[[ 13.  13.  13.]]
+[[ 13.  19.  13.]]
+Accurary
+[[ 0.86666667]]
+[[ 39.]]
+[[ 45.]]
+Recall
+[[ 1.          1.          0.68421053]]
+[[ 13.  13.  13.]]
+[[ 13.  13.  19.]]
+--------------------------------
+23. NN, Iris, not alternate weight, no momentum--------------------------------
+Precision
+[[ 1.          1.          0.86363636]]
+[[ 13.  10.  19.]]
+[[ 13.  10.  22.]]
+Accurary
+[[ 0.93333333]]
+[[ 42.]]
+[[ 45.]]
+Recall
+[[ 1.          0.76923077  1.        ]]
+[[ 13.  10.  19.]]
+[[ 13.  13.  19.]]
+24. NN, Iris, alternate weight, no momentum--------------------------------
+Precision
+[[ 1.    0.65  1.  ]]
+[[ 13.  13.  12.]]
+[[ 13.  20.  12.]]
+Accurary
+[[ 0.84444444]]
+[[ 38.]]
+[[ 45.]]
+Recall
+[[ 1.          1.          0.63157895]]
+[[ 13.  13.  12.]]
+[[ 13.  13.  19.]]
+--------------------------------
+As can be seen, using alternate initialization and momentum has the best overall performance in terms of accuracy, precision, and recall.
+On condition of no momentum, with alternate initialization the recall and precision is higher is one class and lower in another class. The accuracy is lower.
+On condition of momentum, with alternate initialization the precision is higher is one class and lower in another class. The accuracy and recall is overally better.
+On condition of no alternate initialization, with momentum the precision and recall is higher in one class and lower in another class. the accuracy is lower.
+
++-----------------------------------
+|NN on Congress:
++-----------------------------------
+25. NN, Congress, alternate weight, momentum--------------------------------
+Precision
+[[ 0.94230769  0.94936709]]
+[[ 49.  75.]]
+[[ 52.  79.]]
+Accurary
+[[ 0.94656489]]
+[[ 124.]]
+[[ 131.]]
+Recall
+[[ 0.9245283   0.96153846]]
+[[ 49.  75.]]
+[[ 53.  78.]]
+--------------------------------
+26. NN, Congress, no alternate weight, no momentum--------------------------------
+Precision
+[[ 0.94117647  0.9375    ]]
+[[ 48.  75.]]
+[[ 51.  80.]]
+Accurary
+[[ 0.9389313]]
+[[ 123.]]
+[[ 131.]]
+Recall
+[[ 0.90566038  0.96153846]]
+[[ 48.  75.]]
+[[ 53.  78.]]
+--------------------------------
+27. NN, Congress, no alternate weight, momentum--------------------------------
+Precision
+[[ 0.94444444  0.97402597]]
+[[ 51.  75.]]
+[[ 54.  77.]]
+Accurary
+[[ 0.96183206]]
+[[ 126.]]
+[[ 131.]]
+Recall
+[[ 0.96226415  0.96153846]]
+[[ 51.  75.]]
+[[ 53.  78.]]
+--------------------------------
+28. NN, Congress, alternate weight, no momentum--------------------------------
+Precision
+[[ 0.94230769  0.94936709]]
+[[ 49.  75.]]
+[[ 52.  79.]]
+Accurary
+[[ 0.94656489]]
+[[ 124.]]
+[[ 131.]]
+Recall
+[[ 0.9245283   0.96153846]]
+[[ 49.  75.]]
+[[ 53.  78.]]
+--------------------------------
+On congress data set,
+On condition of alternate initialization, with or without momentum, the accuracy, recall and precision remains the same.
+On condition of no alternate initialization, with momentum, the accuracy, recall and precision are all better.
+On condition of no momentum, with alternate initialization the accuracy, recall and precision are all better.
+On condition of momentum, with alternate initialization, the accuracy, recall and precision are all slightly worse.
+
++-----------------------------------
+|NN on Monks1:
++-----------------------------------
+29. NN, Monks1, alternate weight, momentum--------------------------------
+Precision
+[[ 1.          0.98630137]]
+[[ 213.  216.]]
+[[ 213.  219.]]
+Accurary
+[[ 0.99305556]]
+[[ 429.]]
+[[ 432.]]
+Recall
+[[ 0.98611111  1.        ]]
+[[ 213.  216.]]
+[[ 216.  216.]]
+--------------------------------
+30. NN, Monks1, not alternate weight, momentum--------------------------------
+Precision
+[[ 0.69105691  0.75268817]]
+[[ 170.  140.]]
+[[ 246.  186.]]
+Accurary
+[[ 0.71759259]]
+[[ 310.]]
+[[ 432.]]
+Recall
+[[ 0.78703704  0.64814815]]
+[[ 170.  140.]]
+[[ 216.  216.]]
+--------------------------------
+31. NN, Monks1, not alternate weight, no momentum--------------------------------
+Precision
+[[ 0.68309859  0.85135135]]
+[[ 194.  126.]]
+[[ 284.  148.]]
+Accurary
+[[ 0.74074074]]
+[[ 320.]]
+[[ 432.]]
+Recall
+[[ 0.89814815  0.58333333]]
+[[ 194.  126.]]
+[[ 216.  216.]]
+32. NN, Monks1, alternate weight, no momentum--------------------------------
+Precision
+[[ 1.          0.98630137]]
+[[ 213.  216.]]
+[[ 213.  219.]]
+Accurary
+[[ 0.99305556]]
+[[ 429.]]
+[[ 432.]]
+Recall
+[[ 0.98611111  1.        ]]
+[[ 213.  216.]]
+[[ 216.  216.]]
+--------------------------------
+
+On monks1, 
+On conditio of alternate initialization, with or without momentum, the accuracy, precision, and recall remains the same.
+On condition of no alternate initialization, without momentum, the accuracy is better, the precision and recall is bettern in one class and worse in another class.
+With alternate initialization, accuracy, recall and precision are all better.
++-----------------------------------
+|NN on Monks2:
++-----------------------------------
+33. NN, Monks2, alternate weight, momentum--------------------------------
+Precision
+[[ 0.7265625   0.40909091]]
+[[ 186.   72.]]
+[[ 256.  176.]]
+Accurary
+[[ 0.59722222]]
+[[ 258.]]
+[[ 432.]]
+Recall
+[[ 0.64137931  0.50704225]]
+[[ 186.   72.]]
+[[ 290.  142.]]
+--------------------------------
+34. NN, Monks2, not alternate weight, momentum--------------------------------
+Precision
+[[ 0.6712963        nan]]
+[[ 290.    0.]]
+[[ 432.    0.]]
+Accurary
+[[ 0.6712963]]
+[[ 290.]]
+[[ 432.]]
+Recall
+[[ 1.  0.]]
+[[ 290.    0.]]
+[[ 290.  142.]]
+--------------------------------
+35. NN, Monks2, not alternate weight, no momentum--------------------------------
+Precision
+[[ 0.6712963        nan]]
+[[ 290.    0.]]
+[[ 432.    0.]]
+Accurary
+[[ 0.6712963]]
+[[ 290.]]
+[[ 432.]]
+Recall
+[[ 1.  0.]]
+[[ 290.    0.]]
+[[ 290.  142.]]
+36. NN, Monks2, alternate weight, no momentum--------------------------------
+Precision
+[[ 0.67307692  0.375     ]]
+[[ 280.    6.]]
+[[ 416.   16.]]
+Accurary
+[[ 0.66203704]]
+[[ 286.]]
+[[ 432.]]
+Recall
+[[ 0.96551724  0.04225352]]
+[[ 280.    6.]]
+[[ 290.  142.]]
+--------------------------------
+On monks2, 
+On condition of no momentum, with alternate initialization, the accuracy is slightly worse. The precision is better, the recall is better in one class and worse in another class.
+on condition of momentum, with alternate initialization, the accuracy is worse, the precision is better. The recall is better in one class and worse in another class.
+On condition of alternate initialization, without momentum, the accuracy is better, the precision is worse. The recall is better in one class and worse in another class.
+On condition of no alternate initialization, with or without momentum, the accuracym precision and recall are the same.
++-----------------------------------
+|NN on Monks3:
++-----------------------------------
+37. NN, Monks3, alternate weight, momentum--------------------------------
+Precision
+[[ 0.74090909  0.80660377]]
+[[ 163.  171.]]
+[[ 220.  212.]]
+Accurary
+[[ 0.77314815]]
+[[ 334.]]
+[[ 432.]]
+Recall
+[[ 0.79901961  0.75      ]]
+[[ 163.  171.]]
+[[ 204.  228.]]
+--------------------------------
+38. NN, Monks3, not alternate weight, momentum--------------------------------
+Precision
+[[ 0.66323024  0.92198582]]
+[[ 193.  130.]]
+[[ 291.  141.]]
+Accurary
+[[ 0.74768519]]
+[[ 323.]]
+[[ 432.]]
+Recall
+[[ 0.94607843  0.57017544]]
+[[ 193.  130.]]
+[[ 204.  228.]]
+--------------------------------
+39. NN, Monks3, not alternate weight, no momentum--------------------------------
+Precision
+[[ 0.74647887  0.79452055]]
+[[ 159.  174.]]
+[[ 213.  219.]]
+Accurary
+[[ 0.77083333]]
+[[ 333.]]
+[[ 432.]]
+Recall
+[[ 0.77941176  0.76315789]]
+[[ 159.  174.]]
+[[ 204.  228.]]
+40. NN, Monks3, alternate weight, no momentum--------------------------------
+Precision
+[[ 0.73972603  0.8028169 ]]
+[[ 162.  171.]]
+[[ 219.  213.]]
+Accurary
+[[ 0.77083333]]
+[[ 333.]]
+[[ 432.]]
+Recall
+[[ 0.79411765  0.75      ]]
+[[ 162.  171.]]
+[[ 204.  228.]]
+--------------------------------
+On monks3
+On condition of no momentum, without alternate initialization, the precision, accuracy and recall basically are the same as with alternate intialization.
+On condition of momentum, with alternate initialization, the accuracy is better. The precision, and recall is better in one class and worse in the other class.
+On condition of no alternate initialization, with momentum, the accuracy is worse. The precision, and recall is better in one class and worse in the other class.
+On condition of alternate initialization, with momentum, the precision is basically the same. The accuracy is also similar. The recall is similar.
+
+
+
++------------------------------
+|Summary
++------------------------------
+On Iris data set, Nerual Network with momentum and alternate weight initialization is my first choice. Because it has the best performance in terms of accuracy, recall and precision. Gaussian Naive Bayesian is slightly better than Decision tree in terms of accuracy, recall and precision. Decision tree takes too much time to determine the threshold of each feature. Since it is a continuous data set, and the conditional distribution is not for sure. So neural network, which is faster than decision tree and does not require the conditional distribution that is required by Gaussian Bayesian, should be the best method for this data set.
+
+On Congress data set, Overally decision tree using information gain ratio and pruining has the best performance in terms of accuracy, recall and precision. And Naive Bayesian has the worst preformance. The result of Gaussian Naive Bayesian is similar to that of neural networks in term of precision, recall and accuracy. Even though congress data set is discrete data set, GNB has obviously better performance than NB. Since the congress data is discrete data set, and the assumption that given the congressman is democrat or republican its vote on each issue is independent is not convincing, I think decision tree using information gain ratio and pruining, which has the best overall performance, is the best choice.
+
+On Monks1 data set, the neural network has a much better performance than other two methods, with alternate weight initialization and momentum, its accuracy could achieve 0.99305556, where as other two methods gives no more than 0.85. Decision tree is better than NB interms of accuracy, recall and precision. Since this data set has diffent value range in each feature, it takes time to determine threshold in each featuer when using decision tree. So the best choice is neural network.
+
+On Monk32 data set, neural network has obviously defective performance in terms of precision without alternate initialization, its accuracy is slightly higher than GNB and obviously higher than NB. Decision tree without pruning has stable performance in recall and precision and has the highest accuracy, so I think decision tree using information gain without prunining is the best choice. This is reasonable since it is a discrete data set.
+
+On Monks3 data set, neural network has obviously worse performance in terms of accuracy, recall and precision than other two classes of methods. NB has the best performance in terms of recall, precision, and accuracy. Result of decision tree is good but is not as good as NB. I think this result is a strong indication of conditional independence in the data set. So Naive Bayeisan is the best choice for this method.
+
+
+
+
+
+
+
+
+
